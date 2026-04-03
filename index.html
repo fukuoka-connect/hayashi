@@ -61,6 +61,24 @@
     .nav-tel-btn{background:var(--terra)!important;color:#fff!important;padding:9px 22px;border-radius:40px;font-size:.7rem!important;letter-spacing:.1em;transition:background .48s cubic-bezier(.25,.46,.45,.94)!important}
     .nav-tel-btn:hover{background:var(--brown-mid)!important;transition:background .22s cubic-bezier(.25,.46,.45,.94)!important}
 
+    /* Hamburger */
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;z-index:1001}
+    .nav-hamburger span{display:block;width:22px;height:2px;background:var(--brown-deep);transition:all .22s cubic-bezier(.25,.46,.45,.94)}
+    .nav-hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .nav-hamburger.active span:nth-child(2){opacity:0}
+    .nav-hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+    /* Mobile drawer */
+    .nav-drawer{display:none;position:fixed;inset:0;z-index:999;background:rgba(253,250,244,0.98);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:32px}
+    .nav-drawer.open{display:flex}
+    .nav-drawer a{font-family:'Shippori Mincho',serif;font-size:1.1rem;letter-spacing:.2em;color:var(--text-mid);text-decoration:none;transition:color .48s cubic-bezier(.25,.46,.45,.94)}
+    .nav-drawer a:hover{color:var(--terra);transition:color .22s cubic-bezier(.25,.46,.45,.94)}
+    .nav-drawer .drawer-tel{display:inline-flex;align-items:center;gap:8px;background:var(--terra);color:#fff;padding:14px 32px;border-radius:40px;font-size:.9rem;letter-spacing:.1em;margin-top:8px}
+
+    /* Mobile fixed tel button */
+    .mobile-tel-fixed{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:800;background:var(--terra);color:#fff;padding:14px 36px;border-radius:40px;font-family:'Shippori Mincho',serif;font-size:.85rem;letter-spacing:.1em;text-decoration:none;box-shadow:0 4px 20px rgba(192,106,58,.45);transition:all .48s cubic-bezier(.25,.46,.45,.94)}
+    .mobile-tel-fixed:hover{background:var(--brown-mid);transition:all .22s cubic-bezier(.25,.46,.45,.94)}
+
     /* HERO */
     .hero{min-height:100vh;display:grid;grid-template-columns:52% 48%;position:relative;overflow:hidden;background:var(--butter)}
     .hero-left{display:flex;flex-direction:column;justify-content:center;padding:130px 56px 80px 80px;position:relative;z-index:2}
@@ -315,7 +333,9 @@
 
     /* RESPONSIVE */
     @media(max-width:960px){
-      nav{padding:16px 24px} .nav-links{display:none}
+      nav{padding:16px 24px} .nav-links{display:none!important}
+      .nav-hamburger{display:flex!important}
+      .mobile-tel-fixed{display:block}
       .hero{grid-template-columns:1fr;min-height:auto}
       .hero-left{padding:100px 28px 60px} .hero-right{height:440px}
       .strip{padding:18px 24px;gap:32px;flex-wrap:wrap}
@@ -354,7 +374,18 @@
     <li><a href="#access">アクセス</a></li>
     <li><a href="tel:0929336678" class="nav-tel-btn">📞 予約・注文</a></li>
   </ul>
+  <div class="nav-hamburger" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="#menu" onclick="closeDrawer()">メニュー</a>
+  <a href="#takeout" onclick="closeDrawer()">テイクアウト</a>
+  <a href="#story" onclick="closeDrawer()">こだわり</a>
+  <a href="#access" onclick="closeDrawer()">アクセス</a>
+  <a href="tel:0929336678" class="drawer-tel cta-tel" onclick="closeDrawer()">📞 電話で予約・注文</a>
+</div>
+<a href="tel:0929336678" class="mobile-tel-fixed cta-tel">📞 電話で予約・注文</a>
 
 <!-- HERO -->
 <section class="hero">
@@ -710,6 +741,20 @@
 <script>
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); });
+
+  // Mobile drawer
+  function toggleDrawer(){
+    var drawer = document.getElementById('navDrawer');
+    var hamburger = document.querySelector('.nav-hamburger');
+    drawer.classList.toggle('open');
+    hamburger.classList.toggle('active');
+    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeDrawer(){
+    document.getElementById('navDrawer').classList.remove('open');
+    document.querySelector('.nav-hamburger').classList.remove('active');
+    document.body.style.overflow = '';
+  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
   }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
